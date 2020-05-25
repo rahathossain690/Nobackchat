@@ -1,37 +1,44 @@
-const User = require('../Model/User');
+const mongoose = require('mongoose');
+const User = require('./Model/User');
+require('dotenv').config()
 
-function createChat(){
+const DATABASE = "mongodb://" + process.env.DATABASEUSER + ":" + process.env.DATABASEPASSWORD + "@server1:27017,server2:27017,server3:27017/<DATABASE>?ssl=true&replicaSet=example-shard-0&authSource=admin"
+mongoose.connect(DATABASE, { useUnifiedTopology: true , useNewUrlParser: true }, () => console.log("database connected"));
 
-}
-
-function sendMessage(){
-
-}
-
-function getAllChat(){
+let createChat = function(){
 
 }
 
-function getChat(){
+let sendMessage = function(){
 
 }
 
-function addToChat(){
+let getAllChat = function(){
 
 }
 
-function removeFromChat(){
+let getChat = function(){
 
 }
 
-function signIn(){
+let addToChat = function(){
 
 }
 
-function signUp(){
+let removeFromChat = function(){
 
 }
 
-function getUid(){
-    
+let signin = function(){
+
 }
+
+let signup = function(username, password){
+    console.log(username, password);
+}
+
+let getUid = function(){
+
+}
+
+module.exports.signup = signup;

@@ -10,11 +10,15 @@ module.exports.signin = async (data) => {
 }
 
 module.exports.signupCheckExistence = async (data) => {
-    return User.findOne( {username: data.username} );
+    return await User.findOne( {username: data.username} );
 }
 
 module.exports.signup = async (data) => {
     var user = new User({username : data.username, password: data.password, extra: data.extra});
     var savedUser = await user.save();
     return savedUser;
+}
+
+module.exports.getUser = async (data) => {
+    return await User.findOne({_id: data.id});
 }

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 var secure = (req, res, next) => {
-    var id = req.cookies.id;
+    var id = req.cookies.session;
     if(!id) {
         return res.send("unauthorized");
     } 

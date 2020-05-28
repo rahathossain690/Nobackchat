@@ -8,15 +8,15 @@ route.post('/signup', async (req, res) => {
 });
 
 route.post('/signin', async (req, res) => {
-    const status = await nobackchat.signin(req.body);
-    if(status.status == "success"){
-        res.cookie('id', status.id);
+    const status_ = await nobackchat.signin(req.body);
+    if(status_.status == "success"){
+        res.cookie('session', status_.id);
     }
-    res.send(status);
+    res.send({status: status_.status});
 });
 
 route.get('/signout', (req, res) => {
-    res.clearCookie('id');
+    res.clearCookie('session');
     res.send("signout success");
 });
 

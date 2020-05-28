@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
-const User = require('./Model/User');
 const validation = require('./validation');
+const jwt = require('jsonwebtoken');
+const database = require('./database')
 require('dotenv').config();
 
-mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log("database connected"));
 
 let createChat = function(){
 
@@ -41,10 +40,11 @@ let signin = async function(data){
         //verify
         const invalid = validation.signin(data);
         if(invalid) return {status: "failed", message: invalid};
-        // rest
-        const result = await User.findOne({ username: data.username, password: data.password});
+        // to the database
+        const result = await database.signin(data);
         if(result == null) return {status: "failed", message: "incorrect username or password"};
-        return {status: "success", id: result.id};
+        const token = jwt.sign(result.id, process.env.SECRET);
+        return {status: "success", id: token}
     } catch(error){
         return {status: "failed", message: "signin failed"};
     }
@@ -68,13 +68,11 @@ let signup = async function(data){
         if(invalid) return {status: "failed", message: invalid};
         // check for existing username
         // return await User.findOne( {username: data.username});
-        if(!!await User.findOne( {username: data.username} )) {
+        if(!!await database.signupCheckExistence(data)) {
             return {status: "failed", message: "username exits already"}
         }
-        // add to database
-        var user = new User({username : data.username, password: data.password, extra: data.extra});
-        var savedUser = await user.save();
-        return {status: "success", id:savedUser.id};
+        await database.signup(data);
+        return {status: "success"}
     } catch(error){
         return {status: "failed", message: "signup failed"};
     }

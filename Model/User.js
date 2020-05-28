@@ -9,6 +9,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true 
     },
+    isverified: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     extra:{
         type: Object,
         required: false

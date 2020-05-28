@@ -1,26 +1,29 @@
 const express = require('express')
-const cookies = require('cookies')
+const cookieParser = require('cookie-parser')
 const body_parser = require('body-parser')
 const nobackchat = require('./function')
-const validation = require('./validation');
+const auth = require('./auth')
+const secure = require('./secure')
 
 const app = express();
 app.use(body_parser.json());
+app.use(cookieParser());
 
+// custom middlewares
+app.use('/api/auth', auth); // auth middleware
+app.use('/api/secure', secure); //secure middleware
 
-// routes
+// app
 app.get('/', (req, res) => {
-    res.send("putki");
+    res.send("hello");
 });
 
-app.post('/api/signup', async (req, res) => {
-    const status = await nobackchat.signup(req.body);
-    res.send(status);
-});
+// app.get('/api/getuid', (req, res) => {
+//     res.send(req.cookies.id);
+// });
 
-app.post('/api/signin', async (req, res) => {
-    const status = await nobackchat.signin(req.body);
-    res.send(status);
+app.listen(3000, () => {
+    var os = require("os");
+    var hostname = os.hostname();
+    console.log(hostname);
 });
-
-app.listen(3000, () => console.log("Server initiated."));

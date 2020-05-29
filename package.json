@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "node server",
-    "start": "nodemon server"
+    "start": "nodemon server",
+    "gitgit": "git add . && git commit -m \"yet another commit message\" && git push -u origin master"
   },
   "repository": {
     "type": "git",

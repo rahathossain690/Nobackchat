@@ -23,7 +23,5 @@ app.get('/', (req, res) => {
 // });
 
 app.listen(3000, () => {
-    var os = require("os");
-    var hostname = os.hostname();
-    console.log(hostname);
+    console.log("server initiated");
 });

@@ -12,6 +12,14 @@ const signinSchema = joi.object({
     password: joi.string().min(6).required()
 });
 
+const messageSchema = joi.object({
+    chatid: joi.string().min(2),
+    link: joi.boolean(),
+    body: joi.string().min(1).required(),
+    sender: joi.string().required(),
+    member: joi.string()
+});
+
 var signupValidate = function(data){
     const val = signupSchema.validate(data);
     if(!!val.error){
@@ -30,5 +38,15 @@ var signinValidate = function(data){
     }
 }
 
+var messageValidate = function(data){
+    const val = messageSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
+
 module.exports.signup = signupValidate;
 module.exports.signin = signinValidate;
+module.exports.message = messageValidate;

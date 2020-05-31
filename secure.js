@@ -23,4 +23,26 @@ route.get('/user', authentication, async (req, res) => {
     }
 });
 
+// route.post('/user', async (req, res) => {
+//     res.send( await database.createChat(req.body) );
+// });
+
+route.post('/message', async (req, res) => {
+    id_ = req.cookies.session;
+    id_ = jwt.verify(id_, process.env.SECRET);
+    const result = await database.getUser({id: id_});
+    var body = req.body;
+    body["sender"] = result.id;
+    res.send( await nobackchat.sendMessage(body) );
+});
+
+route.get('/message', async (req, res) => {
+    id_ = req.cookies.session;
+    id_ = jwt.verify(id_, process.env.SECRET);
+    const result = await database.getUser({id: id_});
+    var body = req.body;
+    body["id"] = result.id;
+    res.send( await nobackchat.getChat(body) );
+});
+
 module.exports = route;

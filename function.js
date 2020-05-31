@@ -8,7 +8,38 @@ let createChat = function(){
 
 }
 
-let sendMessage = function(){
+/*
+data{
+    chatid:?, sender:, link:?, body
+}
+validate first
+if chatid: save msg to chatid
+else create chat, use chatid to save msg
+*/
+let sendMessage = async function(data){
+    //verify
+    const invalid = validation.message(data);
+    if(invalid) return {status: "failed", message: invalid};
+    // fetch chatid if not given
+    if(!!data.chatid){ // verify chatid
+        if( await database.checkChatById({id: data.chatid}) == null) {
+            return {status: "failed", message: "wrong chatid"};
+        }
+    } else {
+        data.member = [data.member];
+        data.member.push(data.sender);
+        try{ // get chat id if existed
+            data["chatid"] = await (await database.checkChatByMember({id: data.sender, member: data.member}))._id;
+        } catch(err){// create chatid if not existed
+            data["chatid"] = await (await database.createChat({id: data.sender, member: data.member}))._id;
+        }
+    }
+    data["seenby"] = [data.sender];
+    // send message
+    return database.sendMessage(data);
+}
+
+let getUserFromCookie = function(coc){
 
 }
 
@@ -16,8 +47,19 @@ let getAllChat = function(){
 
 }
 
-let getChat = function(){
-
+/*
+@param data{
+    id, chatid, all:?
+}
+check if valid data
+check if sender has access to that chatid
+give chat all data if all 
+give last 50 
+also make that data seen for reciever
+*/
+let getChat = async function(data){
+    var chat = database.checkChatWithMemberAndId({id: data.chatid, member: id});
+    return chat;
 }
 
 let addToChat = function(){
@@ -89,6 +131,9 @@ let signout = function(){
 module.exports.signup = signup;
 module.exports.signin = signin;
 module.exports.signout = signout;
+module.exports.sendMessage = sendMessage;
+module.exports.getUserFromCookie = getUserFromCookie;
+module.exports.getChat = getChat;
 
 //////// CHECKER FUNCTIONS ////////
 let getAllChatofALl = function(){

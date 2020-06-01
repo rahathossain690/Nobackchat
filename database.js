@@ -103,23 +103,68 @@ module.exports.checkChatWithMemberAndId = async (data) => {
     // }
 }
 
-module.exports.sendMessage = async (data) => {
+var sm = async (data) => {
     await Chat.updateOne({_id: data.chatid}, {$set: {lastUpdate: Date.now()}});
     var message = new Message(data);
     return await message.save();
 }
 
+module.exports.sendMessage = sm;
+
 module.exports.getMessage = async (data) => {
     var chat = await Chat.findOne({_id: data.chatid});
+    chat.seen.push(data.id);
     chat.seen = [ ...new Set(chat.seen)]  
     await Chat.updateOne({_id: data.chatid}, {$set: {seen: chat.seen}});
     if(data.all == true){
-        return await Message.find({chatid: data.chatid})
+        return await Message.find({chatid: data.chatid}, {__v: 0, _id: 0, chatid: 0})
     } else{
-        return await Message.find({chatid: data.chatid}).limit(50);
+        return await Message.find({chatid: data.chatid}, {__v: 0, _id: 0, chatid: 0}).limit(50);
     }
 }
 
 module.exports.makeSeenMessage = async (data) => {
     await Chat.updateOne({_id: data.chatid}, {$set: {seen: [data.id]}});
+}
+
+module.exports.getAllChat = async (data) => {
+    if(data.all){
+        return await Chat.find({member: {$all: [data.id]}}, {_id: 0, __v: 0}).sort({date: -1})
+    } else{
+        return await Chat.find({member: {$all: [data.id]}}, {_id: 0, __v: 0}).sort({date: -1}).limit(50)
+    }
+}
+
+module.exports.addToChat = async (data) => {
+    var chat = await Chat.findOne({_id: data.chatid});
+    var newmember = chat.member;
+    var yeah = false;
+    data.member.forEach(async (element) => {
+        try{
+            var user = await User.findOne({_id: element});
+            if( user._id != element) {
+                newmember.push(element);
+                yeah = true;
+            }
+        } catch(err){
+            // currently do nothing
+        }
+    });
+    if(!yeah) return null;
+    newmember = [ ...new Set(chat.member)];
+    sm({sender: data.id, chatid: data.chatid, system: true, body: "Member added"});
+    return await Chat.updateOne({_id: chat.id}, {$set: {member: chat.member}});
+};
+
+module.exports.removeFromChat = async (data) => {
+    var chat = await Chat.findOne({_id: data.chatid});
+    var newmember = chat.member;
+    var yeah = false;
+    var prev_member = new Set(chat.member);
+    prev_member.delete(data.member);
+    if(!yeah) return null;
+    newmember = [ ...new Set(chat.member)];
+    sm({sender: data.id, chatid: data.chatid, system: true, body: "Member added"});
+    return await Chat.updateOne({_id: chat.id}, {$set: {member: chat.member}});
+    
 }

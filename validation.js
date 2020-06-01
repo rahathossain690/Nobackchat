@@ -20,6 +20,21 @@ const messageSchema = joi.object({
     member: joi.array()
 });
 
+const addToChatSchema = joi.object({
+    member: joi.array().required(),
+    chatid: joi.string().min(6),
+    id: joi.string().required()
+});
+
+var addToChatValidate = function(data){
+    const val = addToChatSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
+
 var signupValidate = function(data){
     const val = signupSchema.validate(data);
     if(!!val.error){
@@ -50,3 +65,4 @@ var messageValidate = function(data){
 module.exports.signup = signupValidate;
 module.exports.signin = signinValidate;
 module.exports.message = messageValidate;
+module.exports.addToChat = addToChatValidate;

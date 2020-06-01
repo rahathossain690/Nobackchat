@@ -19,6 +19,11 @@ const chatSchema = mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now()
+    },
+    isGroup:{
+        type: Boolean,
+        required: true,
+        default: false
     }
 });
 module.exports = mongoose.model('Chat', chatSchema);

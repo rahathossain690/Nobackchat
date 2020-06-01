@@ -4,10 +4,6 @@ const database = require('./database')
 require('dotenv').config();
 
 
-let createChat = function(){
-
-}
-
 /*
 data{
     chatid:?, sender:, link:?, body
@@ -25,6 +21,8 @@ let sendMessage = async function(data){
         if( await database.checkChatById({id: data.chatid}) == null) {
             return {status: "failed", message: "wrong chatid"};
         }
+        var chat = database.checkChatWithMemberAndId({id: data.chatid, member: data.sender});
+        if(chat == null) return {status: "failed", message: "permission denied"};
     } else {
         try{ // get chat id if existed
             data["chatid"] = await (await database.checkChatByMember({id: data.sender, member: data.member}))._id;
@@ -37,12 +35,18 @@ let sendMessage = async function(data){
     return database.sendMessage(data);
 }
 
-let getUserFromCookie = function(coc){
-
+/*
+@param: data{
+    id
 }
 
-let getAllChat = function(){
-
+*/
+let getAllChat = async function(data){
+    var chats = await database.getAllChat(data);
+    for(var i = 0; i < chats.length; i++){
+        if(chats[i].name === "DEFAULT_CHAT_NAME") chats[i].name = "";
+    }
+    return chats;
 }
 
 /*
@@ -61,11 +65,22 @@ let getChat = async function(data){
     return database.getMessage({chatid: data.chatid, id: data.id, all: data.all});
 }
 
-let addToChat = function(){
-
+let addToChat = async function(data){
+    //verify
+    const invalid = validation.addToChat(data);
+    if(invalid) return {status: "failed", message: invalid};
+    var chat = await database.checkChatWithMemberAndId({id: data.chatid, member: data.id});
+    if(chat == null) return {status: "failed", message: "permission denied"};
+    return await database.addToChat(data);
 }
 
-let removeFromChat = function(){
+let removeFromChat = async function(data){
+    var chat = await database.checkChatWithMemberAndId({id: data.chatid, member: data.id});
+    if(chat == null) return {status: "failed", message: "permission denied"};
+    return await database.removeFromChat(data);
+}
+
+let renameChat = function(){
 
 }
 
@@ -119,26 +134,11 @@ let signup = async function(data){
     }
 }
 
-let getUid = function(){
-
-}
-
-let signout = function(){
-
-}
-
 module.exports.signup = signup;
 module.exports.signin = signin;
-module.exports.signout = signout;
 module.exports.sendMessage = sendMessage;
-module.exports.getUserFromCookie = getUserFromCookie;
 module.exports.getChat = getChat;
-
-//////// CHECKER FUNCTIONS ////////
-let getAllChatofALl = function(){
-
-}
-
-let getAllUser = function(){
-
-}
+module.exports.getAllChat = getAllChat;
+module.exports.addToChat = addToChat;
+module.exports.removeFromChat = removeFromChat;
+module.exports.renameChat = renameChat;

@@ -9,6 +9,16 @@ const chatSchema = mongoose.Schema({
     member: {
         type: Array,
         required: true
+    },
+    seen: {
+        type: Array,
+        required: true,
+        default: []
+    },
+    lastUpdate:{
+        type: Date,
+        required: true,
+        default: Date.now()
     }
 });
 module.exports = mongoose.model('Chat', chatSchema);

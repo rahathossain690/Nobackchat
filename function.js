@@ -26,15 +26,13 @@ let sendMessage = async function(data){
             return {status: "failed", message: "wrong chatid"};
         }
     } else {
-        data.member = [data.member];
-        data.member.push(data.sender);
         try{ // get chat id if existed
             data["chatid"] = await (await database.checkChatByMember({id: data.sender, member: data.member}))._id;
         } catch(err){// create chatid if not existed
             data["chatid"] = await (await database.createChat({id: data.sender, member: data.member}))._id;
         }
     }
-    data["seenby"] = [data.sender];
+    await database.makeSeenMessage({chatid: data.chatid, id: data.sender});
     // send message
     return database.sendMessage(data);
 }
@@ -58,8 +56,9 @@ give last 50
 also make that data seen for reciever
 */
 let getChat = async function(data){
-    var chat = database.checkChatWithMemberAndId({id: data.chatid, member: id});
-    return chat;
+    var chat = database.checkChatWithMemberAndId({id: data.chatid, member: data.id});
+    if(chat == null) return {status: "failed", message: "permission denied"};
+    return database.getMessage({chatid: data.chatid, id: data.id, all: data.all});
 }
 
 let addToChat = function(){

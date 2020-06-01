@@ -57,8 +57,9 @@ module.exports.getUser = async (data) => {
 }
 */
 module.exports.createChat = async (data) => {
-    data.member.push(data.id);
-    var chat = new Chat({name: data.name, member: data.member.sort()});
+    var mem = data.member;
+    mem.push(data.id);
+    var chat = new Chat({name: data.name, member: mem.sort()});
     return await chat.save(); 
 }
 
@@ -77,8 +78,9 @@ module.exports.createChat = async (data) => {
  */
 
 module.exports.checkChatByMember = async (data) => {
-    data.member.push(data.id);
-    var chat = await Chat.findOne({member: data.member.sort()});
+    var mem = data.member;
+    mem.push(data.id);
+    var chat = await Chat.findOne({member: mem.sort()});
     return chat;
 }
 
@@ -93,15 +95,31 @@ module.exports.checkChatById = async (data) => {
 }
 
 module.exports.checkChatWithMemberAndId = async (data) => {
-    try{
-        var chat = await Chat.findOne({id: id, $all: [data.member] });
+    // try{
+        var chat = await Chat.findOne({_id: data.id, member: {$all: [data.member] }});
         return chat;
-    } catch(err){
-        return null;
-    }
+    // } catch(err){
+    //     return null;
+    // }
 }
 
 module.exports.sendMessage = async (data) => {
+    await Chat.updateOne({_id: data.chatid}, {$set: {lastUpdate: Date.now()}});
     var message = new Message(data);
     return await message.save();
+}
+
+module.exports.getMessage = async (data) => {
+    var chat = await Chat.findOne({_id: data.chatid});
+    chat.seen = [ ...new Set(chat.seen)]  
+    await Chat.updateOne({_id: data.chatid}, {$set: {seen: chat.seen}});
+    if(data.all == true){
+        return await Message.find({chatid: data.chatid})
+    } else{
+        return await Message.find({chatid: data.chatid}).limit(50);
+    }
+}
+
+module.exports.makeSeenMessage = async (data) => {
+    await Chat.updateOne({_id: data.chatid}, {$set: {seen: [data.id]}});
 }

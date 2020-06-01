@@ -19,9 +19,9 @@ const messageSchema = mongoose.Schema({
         required: true,
         default: false 
     },
-    seenby:{
-        type: Array,
-        required: true,
+    body:{
+        type: String,
+        required: true
     }
 });
 module.exports = mongoose.model('Message', messageSchema);

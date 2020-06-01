@@ -17,7 +17,7 @@ const messageSchema = joi.object({
     link: joi.boolean(),
     body: joi.string().min(1).required(),
     sender: joi.string().required(),
-    member: joi.string()
+    member: joi.array()
 });
 
 var signupValidate = function(data){

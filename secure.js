@@ -40,9 +40,13 @@ route.get('/message', async (req, res) => {
     id_ = req.cookies.session;
     id_ = jwt.verify(id_, process.env.SECRET);
     const result = await database.getUser({id: id_});
-    var body = req.body;
-    body["id"] = result.id;
-    res.send( await nobackchat.getChat(body) );
+    var chatid = req.query.chatid;
+    if(chatid == null) res.send({status: "failed", message: "chatid required"});
+    var all = req.query.all;
+    if(all == "true") all = true;
+    else all = false;
+    res.send( await nobackchat.getChat({chatid: chatid, all: all, id: result.id}) );
+    // res.send({chatid: chatid, all: all, id: result.id});
 });
 
 module.exports = route;

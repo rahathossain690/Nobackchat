@@ -2,13 +2,14 @@
 var joi = require('@hapi/joi')
 
 const signupSchema = joi.object({
+    email: joi.string().email().required(),
     username: joi.string().min(6).required(),
     password: joi.string().min(6).required(),
     extra: joi.object()
 });
 
 const signinSchema = joi.object({
-    username: joi.string().min(6).required(),
+    email: joi.string().email(),
     password: joi.string().min(6).required()
 });
 
@@ -16,7 +17,7 @@ const messageSchema = joi.object({
     chatid: joi.string().min(2),
     link: joi.boolean(),
     body: joi.string().min(1).required(),
-    sender: joi.string().required(),
+    id: joi.string().required(),
     member: joi.array()
 });
 

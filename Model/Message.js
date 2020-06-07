@@ -15,7 +15,7 @@ const messageSchema = mongoose.Schema({
         default: Date.now()
     },
     link:{
-        type: String,
+        type: Boolean,
         required: true,
         default: false 
     },

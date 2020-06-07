@@ -4,7 +4,7 @@ const database = require('./database')
 const authentication = require('./authentication')
 require('dotenv').config()
 
-route.post('/chat_info', authentication, async (req, res) => {
+route.post('/create_chat', authentication, async (req, res) => {
     if(!req.locals || !req.locals.isverified){ // unauthorized
         res.status(process.env.STATUS_UNAUTHORIZED).send()
         return 
@@ -22,7 +22,7 @@ route.post('/chat_info', authentication, async (req, res) => {
             throw Error('No such data');
         }
         var chatmember = [user._id.toString(), data.member].sort();
-        var chat = await database.check_chat_with_member({member: chatmember});
+        var chat = await database.check_chat_with_members({member: chatmember});
         if(!chat){ // not found .. make one
             chat = await database.create_chat_with_member({member: chatmember});
         }
@@ -68,6 +68,73 @@ route.get('/user', authentication, async (req, res) => {
             res.status(process.env.STATUS_NOT_FOUND).send();
         }
     }
+})
+
+route.post('/message', authentication, async (req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    var invalid = validation.message(req.body);
+    if(invalid){
+        res.status(process.env.STATUS_CONFLICT).send(invalid)
+        return;
+    }
+    try{
+        var data = req.body;
+        if((await database.check_chat_with_id_and_members({id: data.chatid, member: [req.locals._id.toString()]}))._id.toString() != data.chatid){
+            throw Error('No such chat found');
+        }
+        var msg = await database.send_message({
+            sender: req.locals._id.toString(),
+            link: data.link,
+            chatid: data.chatid,
+            body: data.body
+        });
+        await database.update_chat_date_and_seen({id: msg.chatid, date: msg.date, seen_to_add: msg.sender});
+        res.send();
+    } catch(err){
+        res.status(process.env.STATUS_CONFLICT).send();
+    }
+});
+
+route.get('/chat', authentication, async(req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    try{
+        var all = (req.query.all == 'true') ? true : false;
+        var all_chat = await database.get_all_chat({id: req.locals._id.toString(), all: all});
+        var to_send = [];
+        all_chat.forEach(item => {
+            var newthing = {};
+            newthing.name = item.name == "DEFAULT_CHAT_NAME" ? "" : item.name,
+            newthing.member =  item.member,
+            newthing.seen = item.seen,
+            newthing.lastUpdate = item.lastUpdate,
+            newthing.isGroup = item.isGroup,
+            newthing.chatid = item._id.toString()
+            to_send.push(newthing);
+        });
+        res.send(to_send);
+    } catch(err){
+        res.status(process.env.STATUS_CONFLICT).send();
+    }
+});
+
+route.get('/chat/:chatid', authentication, async (req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    var chatid = req.params.chatid;
+    var all = (req.query.all == 'true') ? true : false;
+    if((await database.check_chat_with_id_and_members({id: chatid, member: [req.locals._id.toString()]}))._id.toString() != chatid){
+        throw Error('No such chat found');
+    }
+    var all_message = await database.get_all_messages({chatid: chatid, all: all});
+    res.send(all_message);
 })
 
 module.exports = route;

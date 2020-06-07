@@ -82,4 +82,9 @@ route.get('/verify/:token', authentication, async (req, res) => {
     }
 });
 
+route.get('/signout', authentication, async(req, res) => {
+    res.clearCookie('session');
+    res.send();
+})
+
 module.exports = route;

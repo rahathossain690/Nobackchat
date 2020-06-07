@@ -9,17 +9,15 @@ const signupSchema = joi.object({
 });
 
 const signinSchema = joi.object({
-    email: joi.string().email(),
+    email: joi.string().email().required(),
     password: joi.string().min(6).required()
 });
 
-// const messageSchema = joi.object({
-//     chatid: joi.string().min(2),
-//     link: joi.boolean(),
-//     body: joi.string().min(1).required(),
-//     id: joi.string().required(),
-//     member: joi.array()
-// });
+const messageSchema = joi.object({
+    chatid: joi.string().min(2).required(),
+    link: joi.boolean(),
+    body: joi.string().min(1).required()
+});
 
 // const addToChatSchema = joi.object({
 //     member: joi.array().required(),
@@ -54,14 +52,14 @@ var signinValidate = function(data){
     }
 }
 
-// var messageValidate = function(data){
-//     const val = messageSchema.validate(data);
-//     if(!!val.error){
-//         return val.error.details[0].message;
-//     } else{
-//         return false;
-//     }
-// }
+module.exports.message = function(data){
+    const val = messageSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
 
 const chatinfo = joi.object({
     member: joi.string().required()

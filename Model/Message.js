@@ -22,11 +22,6 @@ const messageSchema = mongoose.Schema({
     body:{
         type: String,
         required: true
-    },
-    system:{
-        type: Boolean,
-        required: true,
-        default: false
     }
 });
 module.exports = mongoose.model('Message', messageSchema);

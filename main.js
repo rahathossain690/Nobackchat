@@ -128,13 +128,17 @@ route.get('/chat/:chatid', authentication, async (req, res) => {
         res.status(process.env.STATUS_UNAUTHORIZED).send()
         return 
     }
-    var chatid = req.params.chatid;
-    var all = (req.query.all == 'true') ? true : false;
-    if((await database.check_chat_with_id_and_members({id: chatid, member: [req.locals._id.toString()]}))._id.toString() != chatid){
-        throw Error('No such chat found');
-    }
-    var all_message = await database.get_all_messages({chatid: chatid, all: all});
-    res.send(all_message);
+    try{
+        var chatid = req.params.chatid;
+        var all = (req.query.all == 'true') ? true : false;
+        if((await database.check_chat_with_id_and_members({id: chatid, member: [req.locals._id.toString()]}))._id.toString() != chatid){
+            throw Error('No such chat found');
+        }
+        var all_message = await database.get_all_messages({chatid: chatid, all: all});
+        res.send(all_message);
+     } catch(err){
+         res.status(process.env.STATUS_CONFLICT).send();
+     }
 })
 
 module.exports = route;

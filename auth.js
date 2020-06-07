@@ -9,6 +9,7 @@ require('dotenv').config()
 const authentication = require('./authentication');
 
 // TODO: Add email verification
+// TODO: Reset password
 
 route.post('/signup', authentication, async (req, res) => {
     if(!!req.locals){ // already signed in

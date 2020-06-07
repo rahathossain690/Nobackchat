@@ -8,7 +8,8 @@ const chatSchema = mongoose.Schema({
     },
     member: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     seen: {
         type: Array,

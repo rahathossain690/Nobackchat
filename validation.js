@@ -13,28 +13,28 @@ const signinSchema = joi.object({
     password: joi.string().min(6).required()
 });
 
-const messageSchema = joi.object({
-    chatid: joi.string().min(2),
-    link: joi.boolean(),
-    body: joi.string().min(1).required(),
-    id: joi.string().required(),
-    member: joi.array()
-});
+// const messageSchema = joi.object({
+//     chatid: joi.string().min(2),
+//     link: joi.boolean(),
+//     body: joi.string().min(1).required(),
+//     id: joi.string().required(),
+//     member: joi.array()
+// });
 
-const addToChatSchema = joi.object({
-    member: joi.array().required(),
-    chatid: joi.string().min(6),
-    id: joi.string().required()
-});
+// const addToChatSchema = joi.object({
+//     member: joi.array().required(),
+//     chatid: joi.string().min(6),
+//     id: joi.string().required()
+// });
 
-var addToChatValidate = function(data){
-    const val = addToChatSchema.validate(data);
-    if(!!val.error){
-        return val.error.details[0].message;
-    } else{
-        return false;
-    }
-}
+// var addToChatValidate = function(data){
+//     const val = addToChatSchema.validate(data);
+//     if(!!val.error){
+//         return val.error.details[0].message;
+//     } else{
+//         return false;
+//     }
+// }
 
 var signupValidate = function(data){
     const val = signupSchema.validate(data);
@@ -54,8 +54,21 @@ var signinValidate = function(data){
     }
 }
 
-var messageValidate = function(data){
-    const val = messageSchema.validate(data);
+// var messageValidate = function(data){
+//     const val = messageSchema.validate(data);
+//     if(!!val.error){
+//         return val.error.details[0].message;
+//     } else{
+//         return false;
+//     }
+// }
+
+const chatinfo = joi.object({
+    member: joi.string().required()
+});
+
+module.exports.chatinfo = function(data){
+    const val = chatinfo.validate(data);
     if(!!val.error){
         return val.error.details[0].message;
     } else{
@@ -65,5 +78,3 @@ var messageValidate = function(data){
 
 module.exports.signup = signupValidate;
 module.exports.signin = signinValidate;
-module.exports.message = messageValidate;
-module.exports.addToChat = addToChatValidate;

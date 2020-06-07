@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose')
 const User = require('./Model/User')
+const Chat = require('./Model/Chat')
 require('dotenv').config()
 
 mongoose.connect(process.env.DATABASE,
@@ -26,4 +27,12 @@ module.exports.check_user_by_email_password = async (data) => {
 
 module.exports.check_user_by_id = async (data) => {
     return await User.findOne({_id: data.id});
+}
+
+module.exports.check_chat_with_member = async(data) => {
+    return await Chat.findOne({member: data.member});
+}
+
+module.exports.create_chat_with_member = async (data) => {
+    return await (new Chat({member: data.member})).save();
 }

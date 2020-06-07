@@ -134,6 +134,7 @@ route.get('/chat/:chatid', authentication, async (req, res) => {
         if((await database.check_chat_with_id_and_members({id: chatid, member: [req.locals._id.toString()]}))._id.toString() != chatid){
             throw Error('No such chat found');
         }
+        database.update_seen_in_chat({id: chatid, member: req.locals._id.toString()});
         var all_message = await database.get_all_messages({chatid: chatid, all: all});
         res.send(all_message);
      } catch(err){

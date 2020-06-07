@@ -65,3 +65,7 @@ module.exports.get_all_messages = async(data) => {
         return await Message.find({chatid: data.chatid}, {_id: 0, __v: 0}).limit(50);
     }
 }
+
+module.exports.update_seen_in_chat = async (data) => {
+    
+}

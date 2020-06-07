@@ -67,5 +67,10 @@ module.exports.get_all_messages = async(data) => {
 }
 
 module.exports.update_seen_in_chat = async (data) => {
-    
+    // return await Chat.updateOne({_id: data.id}, )
+    var chat = Chat.findOne({_id: id});
+    var mem = chat.member;
+    mem.push(data.member);
+    mem = [...new Set(mem)];
+    await Chat.updateOne({_id: data.id}, {$set: mem});
 }

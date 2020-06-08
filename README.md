@@ -7,3 +7,4 @@ Simple REST API Backend for chat application built with MongoDB and Node.js.
 
 # End points
 ## Sign-up
+1. No sign up

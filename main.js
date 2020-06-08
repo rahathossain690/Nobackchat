@@ -5,7 +5,6 @@ const authentication = require('./authentication')
 require('dotenv').config()
 
 
-
 route.post('/create_chat', authentication, async (req, res) => {
     if(!req.locals || !req.locals.isverified){ // unauthorized
         res.status(process.env.STATUS_UNAUTHORIZED).send()

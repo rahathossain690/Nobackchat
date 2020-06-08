@@ -32,7 +32,7 @@ route.post('/signup', authentication, async (req, res) => {
             uid: user._id
           }, process.env.EMAIL_SECRET, { expiresIn: 5 * 60 });
         const link = 'http://' + req.get('host') + '/api/auth/verify/' + token;
-        // mail.send_verification_mail({email: data.email, link: link}); // send verification email:: async
+        mail.send_verification_mail({email: data.email, link: link}); // send verification email:: async
         res.status(200).send();
     } catch(err){
         res.status(400).send();
@@ -56,10 +56,10 @@ route.post('/signin', authentication, async (req, res) => {
         return;
     }
     // TODO: to be uncommented later
-    // if(!user.is_email_verified){ // not verified email
-    //     res.status(401);
-    //     return;
-    // }
+    if(!user.is_email_verified){ // not verified email
+        res.status(401);
+        return;
+    }
     const token = jwt.sign({
         uid: user._id
       }, process.env.SESSION_SECRET)

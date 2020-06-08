@@ -11,8 +11,9 @@ Let us define url for this.
 ```const URL = 'http://localhost:3000/' || process.env.URL```
 
 ## Sign-up: POST
+Code
 ```
-var body = {
+const data = {
     email: "rahathossain690@gmail.com"      // String, required
     username: "Rahat Hossain",              // String, required
     password: "ThIsiSverystrongpassword69", //String, required,
@@ -20,5 +21,17 @@ var body = {
         gender: "Male"
     }
 }
-```
 
+fetch( URL + '/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify( data )
+  })
+  .then(res => res.json())
+  .then(res => {
+      const status = res.status;
+  });
+  .catch(err => {
+      console.log(err); // handle error
+  });
+
+```

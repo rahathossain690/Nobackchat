@@ -7,6 +7,7 @@ Simple REST API Backend for chat application built with MongoDB and Node.js.
 
 # End points
 1. Let us define url for this.
+
 ``const URL = 'http://localhost:3000/' || process.env.URL``
 ## Sign-up
 GET: 

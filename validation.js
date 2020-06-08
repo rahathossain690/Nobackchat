@@ -19,20 +19,40 @@ const messageSchema = joi.object({
     body: joi.string().min(1).required()
 });
 
-// const addToChatSchema = joi.object({
-//     member: joi.array().required(),
-//     chatid: joi.string().min(6),
-//     id: joi.string().required()
-// });
+const createGroupSchema = joi.object({
+    members: joi.array().required(),
+    name: joi.string().min(1)
+});
 
-// var addToChatValidate = function(data){
-//     const val = addToChatSchema.validate(data);
-//     if(!!val.error){
-//         return val.error.details[0].message;
-//     } else{
-//         return false;
-//     }
-// }
+
+
+const addToChatSchema = joi.object({
+    members: joi.array().required(),
+    chatid: joi.string().min(6)
+});
+
+const renameSchema = joi.object({
+    name: joi.string().min(1).required(),
+    chatid: joi.string().min(1).required()
+});
+
+module.exports.rename = function(data){
+    const val = renameSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
+
+module.exports.add = function(data){
+    const val = addToChatSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
 
 var signupValidate = function(data){
     const val = signupSchema.validate(data);
@@ -54,6 +74,15 @@ var signinValidate = function(data){
 
 module.exports.message = function(data){
     const val = messageSchema.validate(data);
+    if(!!val.error){
+        return val.error.details[0].message;
+    } else{
+        return false;
+    }
+}
+
+module.exports.create_group = function(data){
+    const val = createGroupSchema.validate(data);
     if(!!val.error){
         return val.error.details[0].message;
     } else{

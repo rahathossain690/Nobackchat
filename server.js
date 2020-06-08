@@ -12,6 +12,8 @@ app.use(cookieParser());
 app.use('/api/auth', auth); // auth middleware
 app.use('/api/secure', main); // main middleware
 
-app.listen(3000, () => {
+app.get('/', (req, res) => res.send('haha'));
+
+app.listen(3000, async() => {
     console.log("server initiated");
 });

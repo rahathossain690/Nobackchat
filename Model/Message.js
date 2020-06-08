@@ -22,6 +22,12 @@ const messageSchema = mongoose.Schema({
     body:{
         type: String,
         required: true
+    },
+    actor: {
+        type: String
+    },
+    victim:{
+        type: Array
     }
 });
 module.exports = mongoose.model('Message', messageSchema);

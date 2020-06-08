@@ -30,12 +30,12 @@ module.exports.check_user_by_id = async (data) => {
     return await User.findOne({_id: data.id});
 }
 
-module.exports.check_chat_with_members = async(data) => {
+module.exports.check_chat_with_exact_members = async(data) => {
     return await Chat.findOne({member: data.member});
 }
 
 module.exports.create_chat_with_member = async (data) => {
-    return await (new Chat({member: data.member})).save();
+    return await (new Chat({member: data.member, name: data.name, isGroup: data.isGroup})).save();
 }
 
 module.exports.send_message = async (data) => {
@@ -67,10 +67,21 @@ module.exports.get_all_messages = async(data) => {
 }
 
 module.exports.update_seen_in_chat = async (data) => {
-    // return await Chat.updateOne({_id: data.id}, )
     var chat = Chat.findOne({_id: id});
     var mem = chat.member;
     mem.push(data.member);
     mem = [...new Set(mem)];
-    await Chat.updateOne({_id: data.id}, {$set: mem});
+    return await Chat.updateOne({_id: data.id}, {$set: {seen: mem}});
+}
+
+module.exports.update_member_of_chat = async (data) => {
+    return await Chat.updateOne({_id: data.id}, {$set: {member: data.member}});    
+}
+
+module.exports.check_chat_with_id = async (data) => {
+    return await Chat.findOne({_id: data.id});
+}
+
+module.exports.rename_chat = async (data) => {
+    return await Chat.updateOne({_id: data.id}, {$set: {name: data.name}});
 }

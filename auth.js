@@ -76,7 +76,7 @@ route.get('/verify/:token', authentication, async (req, res) => {
     try{
         const uid = jwt.verify(token, process.env.EMAIL_SECRET).uid;
         await database.verify_user_by_id({id: uid});
-        res.redirect(process.env.REDIRECT_LINK_AFTER_VERIFICATION); // redirecting to a site
+        res.send(); // redirecting to a site
     }catch(err){
         res.status(403).send();
     }

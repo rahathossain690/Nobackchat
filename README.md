@@ -1,5 +1,6 @@
 # Nobackchat
-Simple REST API Backend for chat application built with MongoDB and Node.js. Feel free to use it for your front-end chat application/
+Simple REST API Backend for chat application built with MongoDB and Node.js. Feel free to use it for your front-end chat application. 
+Hopefully I will try to provide a running API for any Chat-Application to use later on.
 
 ## To use
 1. Install node and npm.
@@ -12,7 +13,7 @@ Let us define url for this.
 
 ```const URL = 'http://localhost:3000/' || process.env.URL```
 
-## Signup: POST
+## Signing up: POST
 url: `/api/auth/signup`
 
 body: 
@@ -32,7 +33,7 @@ OnSuccess: Response.status will be 200(OK). Verification email will be sent to t
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Signin: POST
+## Signing in: POST
 url: `/api/auth/signin`
 
 body:
@@ -49,7 +50,7 @@ OnSuccess: Response.status will be 200(OK). Verification email will be sent to t
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Signout: GET
+## Signing out: GET
 url: `/api/auth/signout`
 
 This GET request knows no failure ... only if your internet connection is failure itself.
@@ -73,7 +74,7 @@ User:
 
 OnFail: Returns error code.
 
-## Create_chat: POST
+## Creating single chat thread: POST
 url: `/api/secure/create_chat`
 
 body:
@@ -100,7 +101,7 @@ Returned Chat Schema:
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Create_group: POST
+## Creating group chat thread: POST
 url: `/api/secure/create_group`
 
 body:
@@ -126,7 +127,7 @@ Returned Chat
 ```
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Message: POST
+## Sending message: POST
 url: `/api/secure/message`
 
 body:
@@ -145,7 +146,7 @@ OnSuccess: Response.status will be 200(ok).
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Chat: GET
+## Getting all chats: GET
 url: `api/secure/chat` (for last 50 message threads) or `api/secure/chat?all=true` (for all the message threads)
 
 Requirement: User authentication and validation.
@@ -154,7 +155,7 @@ OnSuccess: Response.status will be 200. Array of Chat will be shown. Chats will 
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Chat-chatid: GET
+## Getting all messages: GET
 url: `api/secure/chat/{<CHAT_ID>}` (for last 50 messages) or `api/secure/chat/{<CHAT_ID>}` (for all messages)
 
 OnSuccess: Response.status will be 200. Array of Messages will be shown.
@@ -178,7 +179,7 @@ Points to be noted:
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Add: POST
+## Adding member on a group: POST
 url: `/api/secure/add`
 
 body:
@@ -199,7 +200,7 @@ OnSuccess: Response.status will be 200.
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Remove: POST
+## Removing member from a group: POST
 url: `/api/secure/remove`
 
 body:
@@ -220,7 +221,7 @@ OnSuccess: Response.status will be 200.
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Rename: POST
+## Renaming a conversation: POST
 url: `/api/secure/rename`
 
 body:
@@ -237,7 +238,7 @@ OnSuccess: Response.status will be 200.
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
-## Search: GET
+## Searching User by email: GET
 url: `/api/secure/search?email={EMAIL}`
 
 Requirement: User authentication and validation.

@@ -10,28 +10,19 @@ Let us define url for this.
 
 ```const URL = 'http://localhost:3000/' || process.env.URL```
 
-## Sign-up: POST
-Code
+## Signup: POST
+POST url: `/api/auth/signup`
+
+body: 
 ```
-const data = {
-    email: "rahathossain690@gmail.com"      // String, required
-    username: "Rahat Hossain",              // String, required
-    password: "ThIsiSverystrongpassword69", //String, required,
-    extra: {                                // Object, not required
-        gender: "Male"
+{
+    email: "<EMAIL>"            // type: String, required
+    username: "<USERNAME>",     // type: String, required
+    password: "<PASSWORD>",     // type: String, required,
+    extra: {                    // type: Object, optional
+        anything: "<ANYTHING>"
     }
 }
-
-fetch( URL + '/api/auth/signup', {
-    method: 'POST',
-    body: JSON.stringify( data )
-  })
-  .then(res => res.json())
-  .then(res => {
-      const status = res.status;
-  });
-  .catch(err => {
-      console.log(err); // handle error
-  });
-
 ```
+OnSuccess: Response.status will be 200(OK)
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.

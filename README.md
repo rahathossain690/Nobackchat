@@ -148,7 +148,10 @@ OnFail: Response.status will be an error code. Reason will be shown if possible 
 ## Chat: GET
 url: `api/secure/chat` (for last 50 message threads) or `api/secure/chat?all=true` (for all the message threads)
 
-OnSuccess: Response.status will be 200. Array of Chat will be shown.
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200. Array of Chat will be shown. Chats will be given on the order of the latest activity.
+
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
 ## Chat-chatid: GET
@@ -165,10 +168,80 @@ Message Schema:
     link: true|false
     body: "<MESSAGE_BODY>"
     actor: "<USER_ID>"
-    victim: <ARRAY OF USER_ID>
+    victim: ["<USER_ID>,...]
 }
 ```
 Points to be noted:
-1. When member insertion is acted on a group, Message.actor will be the actor of that action, Message.victim will be the array of people inserted, Message.sender will be "SYSTEM", Message.body will be "ADDED".
-2. When member removal action is acted on a group, Message.actor will be the actor of that action, Message.victim will be the array of people removed, Message.sender will be "SYSTEM", Message.body will be "REMOVED".
-3. Rest on all the other cases this will be perfect.
+1. When member insertion is acted on a group, It will be notified as a message. For that message, Message.actor will be the actor of that action, Message.victim will be the array of people inserted, Message.sender will be "SYSTEM", Message.body will be "ADDED".
+2. When member removal action is acted on a group,It will be notified as a message. For that message, Message.actor will be the actor of that action, Message.victim will be the array of people removed, Message.sender will be "SYSTEM", Message.body will be "REMOVED".
+3. Else on all the other cases this will be perfect.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+## Add: POST
+url: `/api/secure/add`
+
+body:
+```
+{
+    chatid: "<CHAT_ID>",
+    members: ["<USER_ID>"]
+}
+```
+Points to be noted.
+1. No User_ID can be invalid or already in the group.
+2. Adding will not work for singlular message threads.
+
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+## Remove: POST
+url: `/api/secure/remove`
+
+body:
+```
+{
+    chatid: "<CHAT_ID>",
+    members: ["<USER_ID>"]
+}
+```
+Points to be noted.
+1. No User_ID can be invalid and has to be already in the group.
+2. Removing will not work for singlular message threads.
+
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+## Rename: POST
+url: `/api/secure/rename`
+
+body:
+```
+{
+    chatid: "<CHAT_ID>",
+    name: ["<USER_ID>"]
+}
+```
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+## Search: GET
+url: `/api/secure/search?email={EMAIL}`
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200. User information will be provided if matched.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.

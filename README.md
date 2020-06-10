@@ -155,7 +155,7 @@ OnSuccess: Response.status will be 200. Array of Chat will be shown. Chats will 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
 ## Getting all messages: GET
-url: `api/secure/chat/{<CHAT_ID>}` (for last 50 messages) or `api/secure/chat/{<CHAT_ID>}` (for all messages)
+url: `api/secure/chat/{<CHAT_ID>}` (for last 50 messages) or `api/secure/chat/{<CHAT_ID>}?all=true` (for all messages)
 
 OnSuccess: Response.status will be 200. Array of Messages will be shown.
 

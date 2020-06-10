@@ -85,3 +85,7 @@ module.exports.check_chat_with_id = async (data) => {
 module.exports.rename_chat = async (data) => {
     return await Chat.updateOne({_id: data.id}, {$set: {name: data.name}});
 }
+
+module.exports.update_friend = async (data) => {
+    return await User.updateOne({_id: data.id}, {$set: {friend: data.friend}});
+}

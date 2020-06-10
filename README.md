@@ -1,12 +1,11 @@
 # Nobackchat
 Simple REST API Backend for chat application built with MongoDB and Node.js. Feel free to use it for your front-end chat application. 
-Hopefully I will try to provide a running API for any Chat-Application to use later on.
 
 ## To use
 1. Install node and npm.
-2. Clone / Fork this project and install dependencies via command ```npm install```
+2. Clone / Fork this project and install dependencies via command `npm install`
 3. To enble email verification please go through necessery processes. 
-4. Setup .env file with currect varriables.
+4. Setup .env file with from .env_demo file.
 
 # End points
 Let us define url for this.
@@ -75,7 +74,7 @@ User:
 OnFail: Returns error code.
 
 ## Creating single chat thread: POST
-url: `/api/secure/create_chat`
+url: `/api/secure/create/single`
 
 body:
 ```
@@ -102,7 +101,7 @@ Returned Chat Schema:
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
 ## Creating group chat thread: POST
-url: `/api/secure/create_group`
+url: `/api/secure/create/group`
 
 body:
 ```
@@ -179,6 +178,36 @@ Points to be noted:
 
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
+## Getting frind list: GET
+url: `api/secure/friend`
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200. Array of friends user-id will be sent.
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+## Adding to friend list: GET
+url: `api/secure/friend/add?userid=<USER_ID>`
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200..
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+
+## Removing from friend list: GET
+url: `api/secure/friend/remove?userid=<USER_ID>`
+
+Requirement: User authentication and validation.
+
+OnSuccess: Response.status will be 200..
+
+OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
+
+
+
 ## Adding member on a group: POST
 url: `/api/secure/add`
 
@@ -239,7 +268,7 @@ OnSuccess: Response.status will be 200.
 OnFail: Response.status will be an error code. Reason will be shown if possible to detect.
 
 ## Searching User by email: GET
-url: `/api/secure/search?email={EMAIL}`
+url: `/api/secure/search?email={<EMAIL>}`
 
 Requirement: User authentication and validation.
 

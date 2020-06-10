@@ -5,7 +5,7 @@ const authentication = require('./authentication')
 require('dotenv').config()
 
 
-route.post('/create_chat', authentication, async (req, res) => {
+route.post('/create/single', authentication, async (req, res) => {
     if(!req.locals || !req.locals.isverified){ // unauthorized
         res.status(process.env.STATUS_UNAUTHORIZED).send()
         return 
@@ -21,6 +21,7 @@ route.post('/create_chat', authentication, async (req, res) => {
         var second_member = await database.check_user_by_id({id:data.member});
         if(!second_member){
             throw Error('No such data');
+            return;
         }
         var chatmember = [user._id.toString(), data.member].sort();
         var chat = await database.check_chat_with_exact_members({member: chatmember});
@@ -145,7 +146,7 @@ route.get('/chat/:chatid', authentication, async (req, res) => {
      }
 })
 
-route.post('/create_group', authentication, async (req, res) => {
+route.post('/create/group', authentication, async (req, res) => {
     if(!req.locals || !req.locals.isverified){ // unauthorized
         res.status(process.env.STATUS_UNAUTHORIZED).send()
         return 
@@ -355,6 +356,58 @@ route.get('/search', authentication, async (req, res) => {
         }
     } catch (err){
         res.status(404).send();
+    }
+});
+
+route.get('/friend', authentication, async (req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    res.send(req.locals.friend);
+});
+
+route.get('/friend/add', authentication, async (req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    try{
+        var user_to_add = req.query.userid;
+        var second_member = await database.check_user_by_id({id:user_to_add});
+        if(!second_member){
+            throw Error('No such data');
+            return;
+        }
+        var frnd = req.locals.friend;
+        frnd.push(user_to_add);
+        frnd = [...new Set(frnd)];
+        await database.update_friend({id: req.locals._id.toString(), friend: frnd});
+        res.send();
+    } catch(err){
+        res.status(this.process.env.STATUS_CONFLICT).send();
+    }
+});
+
+route.get('/friend/remove', authentication, async (req, res) => {
+    if(!req.locals || !req.locals.isverified){ // unauthorized
+        res.status(process.env.STATUS_UNAUTHORIZED).send()
+        return 
+    }
+    try{
+        var user_to_remove = req.query.userid;
+        var second_member = await database.check_user_by_id({id:user_to_remove});
+        if(!second_member){
+            throw Error('No such data');
+            return;
+        }
+        var frnd = new Set(req.locals.friend);
+        frnd.delete(user_to_remove);
+        frnd = [...frnd];
+        await database.update_friend({id: req.locals._id.toString(), friend: frnd});
+        res.send();
+    } catch(err){
+        res.status(this.process.env.STATUS_CONFLICT).send();
     }
 });
 

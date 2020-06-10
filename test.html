@@ -1,0 +1,45 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<input type="text" id="url" value="http://localhost:3000/">
+<br>
+<textarea type="text" id="json" value="{}">
+
+</textarea>
+<br>
+<button onclick="get()">GET</button><button onclick="post()">POST</button>
+
+<br>
+<p id="res"></p>
+<script>
+    console.log(axios);
+    function get() {
+        const url = document.getElementById('url').value.trim(); 
+        axios.get( url )
+        .then(function (response) {
+            // handle success
+            console.log(response);
+            document.getElementById('res').innerHTML = JSON.stringify(response.data, null, 4);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(response);
+            document.getElementById('res').innerHTML = error;
+        })
+        .then(function () {
+            // always executed
+        });
+    }
+    function post(){
+        axios.post(document.getElementById('url').value.trim(),
+            JSON.parse(document.getElementById('json').value.trim())
+        )
+        .then(function (response) {
+            console.log(response);
+            document.getElementById('res').innerHTML = JSON.stringify(response.data, null, 4);
+        })
+        .catch(function (error) {
+            console.log(error);
+            document.getElementById('res').innerHTML = error;
+        });
+    }
+</script>

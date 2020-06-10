@@ -18,15 +18,15 @@ route.post('/signup', authentication, async (req, res) => {
     }
     data = req.body; // data should be valid according to validation.signin schema model
     const invalid = validation.signup(data); // calling validation
-    if(!!invalid){ // if invalid
+    if(invalid){ // if invalid
         res.status(409).send( invalid );
         return;
     }
-    if(!!await database.check_user_by_email({email: data.email}) ){ // email already in use
-        res.status(409).send(invalid);
-        return;
-    }
     try{
+        if(!!await database.check_user_by_email({email: data.email}) ){ // email already in use
+            res.status(409).send("Already exists");
+            return;
+        }
         const user = await database.create_user(data); // create user
         const token = jwt.sign({
             uid: user._id
@@ -56,8 +56,8 @@ route.post('/signin', authentication, async (req, res) => {
         return;
     }
     // TODO: to be uncommented later
-    if(!user.is_email_verified){ // not verified email
-        res.status(401);
+    if(!user.isverified){ // not verified email
+        res.status(401).send();
         return;
     }
     const token = jwt.sign({
